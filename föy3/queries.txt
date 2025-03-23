@@ -1,0 +1,48 @@
+3) 
+SELECT ad, soyad, maas 
+FROM calisanlar 
+WHERE calisan_birim_id IN (SELECT birim_id FROM birimler WHERE birim_ad IN ('Yazılım', 'Donanım'));
+
+
+4) 
+SELECT ad, soyad, maas 
+FROM calisanlar 
+WHERE maas = (SELECT MAX(maas) FROM calisanlar);
+
+
+5)
+SELECT birim_ad, (SELECT COUNT(*) FROM calisanlar c WHERE c.calisan_birim_id = b.birim_id) AS calisan_sayisi
+FROM birimler b;
+
+
+6)
+SELECT unvan_calisan, COUNT(*) AS calisan_sayisi
+FROM unvan
+GROUP BY unvan_calisan
+HAVING COUNT(*) > 1;
+
+
+7) 
+SELECT ad, soyad, maas 
+FROM calisanlar 
+WHERE maas BETWEEN 50000 AND 100000;
+
+8) 
+SELECT ad, soyad, 
+       (SELECT birim_ad FROM birimler WHERE birim_id = c.calisan_birim_id) AS birim,
+       (SELECT unvan_calisan FROM unvan WHERE unvan_calisan_id = c.calisan_id) AS unvan,
+       (SELECT ikramiye_ucret FROM ikramiye WHERE ikramiye_calisan_id = c.calisan_id) AS ikramiye_ucret
+FROM calisanlar c
+WHERE EXISTS (SELECT 1 FROM ikramiye WHERE ikramiye_calisan_id = c.calisan_id);
+
+9) 
+SELECT c.ad, c.soyad, u.unvan_calisan
+FROM calisanlar c
+JOIN unvan u ON c.calisan_id = u.unvan_calisan_id
+WHERE u.unvan_calisan IN ('Yönetici', 'Müdür');
+
+10)
+SELECT ad, soyad, maas 
+FROM calisanlar 
+WHERE maas IN (SELECT MAX(maas) FROM calisanlar GROUP BY calisan_birim_id);
+
